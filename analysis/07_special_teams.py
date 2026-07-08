@@ -94,9 +94,11 @@ print(agg[['series_type', 'phase', 'cb_pp_pct', 'opp_pp_pct', 'net_pp_goals', 'c
 COMEBACK_COLOR   = '#C8102E'
 COMPARISON_COLOR = '#003087'
 
-fig, axes = plt.subplots(1, 2, figsize=(13, 5), sharey=True)
+fig, axes = plt.subplots(1, 2, figsize=(13, 5), sharey=True, facecolor='#111111')
+for ax in axes:
+    ax.set_facecolor('#111111')
 fig.suptitle('Power Play Goals Per Game — Trailing Team vs Opponent\nby Phase and Series Type',
-             fontsize=13, fontweight='bold')
+             fontsize=13, fontweight='bold', color='white')
 
 for ax, is_cb, title in [
     (axes[0], True,  'Comeback Series'),
@@ -125,24 +127,29 @@ for ax, is_cb, title in [
                 ha='center', fontsize=9, fontweight='bold', color='#555555')
 
     ax.set_xticks(x)
-    ax.set_xticklabels(phase_st['phase'], fontsize=10)
-    ax.set_title(title, fontsize=11, fontweight='bold')
-    ax.set_ylabel('Avg PP goals per game' if ax == axes[0] else '')
-    ax.legend(fontsize=9)
+    ax.set_xticklabels(phase_st['phase'], fontsize=10, color='white')
+    ax.set_title(title, fontsize=11, fontweight='bold', color='white')
+    ax.set_ylabel('Avg PP goals per game' if ax == axes[0] else '', color='white')
+    ax.legend(fontsize=9, facecolor='#222222', edgecolor='#555555', labelcolor='white')
     ax.set_ylim(0, 1.2)
+    ax.tick_params(colors='white')
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_color('#555555')
+    ax.spines['bottom'].set_color('#555555')
 
 plt.tight_layout()
 path = OUT_DIR / 'chart8_pp_goals_per_game.png'
-plt.savefig(path, dpi=150, bbox_inches='tight')
+plt.savefig(path, dpi=150, bbox_inches='tight', facecolor='#111111')
 plt.close()
 print(f'\nSaved {path.name}')
 
 # ── CHART B: Game-by-game net PP goals — all comeback series ─────────────────
-fig, axes = plt.subplots(2, 2, figsize=(13, 9))
+fig, axes = plt.subplots(2, 2, figsize=(13, 9), facecolor='#111111')
+for ax in axes.flat:
+    ax.set_facecolor('#111111')
 fig.suptitle('Net Power Play Goals Per Game — All Four Comeback Series\n(positive = trailing team had more PP goals)',
-             fontsize=13, fontweight='bold')
+             fontsize=13, fontweight='bold', color='white')
 
 FULL_NAMES = {
     '1942_tor_det': '1942 Toronto Maple Leafs',
@@ -163,34 +170,37 @@ for ax, sid in zip(axes.flat, ['1942_tor_det', '1975_nyi_pit', '2010_phi_bos', '
     display_vals = [d if d != 0 else 0.15 for d in diffs]
     bars = ax.bar(game_nums, display_vals, color=colors, edgecolor='white', linewidth=0.5)
 
-    # Label every bar with its actual value
     for game_num, diff, disp in zip(game_nums, diffs, display_vals):
         y_offset = 0.12 if disp >= 0 else -0.28
         ax.text(game_num, disp + y_offset, str(diff),
                 ha='center', va='bottom', fontsize=9, fontweight='bold',
-                color='black')
+                color='white')
 
-    ax.axhline(0, color='black', linewidth=0.8)
-    ax.axvline(3.5, color='black', linewidth=1, linestyle='--', alpha=0.5)
-    ax.text(3.6, 2.6, '0–3\nhole', fontsize=7.5, color='black', alpha=0.6)
-    ax.set_title(FULL_NAMES[sid], fontsize=10, fontweight='bold')
-    ax.set_xlabel('Game number', fontsize=9)
-    ax.set_ylabel('Net PP goals (trailing team)')
+    ax.axhline(0, color='#888888', linewidth=0.8)
+    ax.axvline(3.5, color='#888888', linewidth=1, linestyle='--', alpha=0.5)
+    ax.text(3.6, 2.6, '0–3\nhole', fontsize=7.5, color='#888888', alpha=0.8)
+    ax.set_title(FULL_NAMES[sid], fontsize=10, fontweight='bold', color='white')
+    ax.set_xlabel('Game number', fontsize=9, color='white')
+    ax.set_ylabel('Net PP goals (trailing team)', color='white')
     ax.set_xticks(game_nums)
     ax.set_ylim(-3, 3.2)
+    ax.tick_params(colors='white')
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_color('#555555')
+    ax.spines['bottom'].set_color('#555555')
 
 plt.tight_layout()
 path = OUT_DIR / 'chart9_net_pp_per_game.png'
-plt.savefig(path, dpi=150, bbox_inches='tight')
+plt.savefig(path, dpi=150, bbox_inches='tight', facecolor='#111111')
 plt.close()
 print(f'Saved {path.name}')
 
 # ── CHART C: Penalty minutes discipline shift ─────────────────────────────────
-fig, ax = plt.subplots(figsize=(9, 5))
+fig, ax = plt.subplots(figsize=(9, 5), facecolor='#111111')
+ax.set_facecolor('#111111')
 fig.suptitle('Penalty Minutes — Trailing Team vs Opponent\nComeback Series: Games 1–3 vs Games 4–7',
-             fontsize=13, fontweight='bold')
+             fontsize=13, fontweight='bold', color='white')
 
 pim_agg = (
     st[st['is_comeback_series'] == True]
@@ -211,15 +221,18 @@ for i, row in pim_agg.iterrows():
             ha='center', fontsize=10, fontweight='bold', color='#555555')
 
 ax.set_xticks(x)
-ax.set_xticklabels(pim_agg['phase'], fontsize=11)
-ax.set_ylabel('Avg penalty minutes per game', fontsize=10)
+ax.set_xticklabels(pim_agg['phase'], fontsize=11, color='white')
+ax.set_ylabel('Avg penalty minutes per game', fontsize=10, color='white')
 ax.set_ylim(0, 20)
-ax.legend(fontsize=10)
+ax.tick_params(colors='white')
+ax.legend(fontsize=10, facecolor='#222222', edgecolor='#555555', labelcolor='white')
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
+ax.spines['left'].set_color('#555555')
+ax.spines['bottom'].set_color('#555555')
 
 plt.tight_layout()
 path = OUT_DIR / 'chart10_pim_discipline.png'
-plt.savefig(path, dpi=150, bbox_inches='tight')
+plt.savefig(path, dpi=150, bbox_inches='tight', facecolor='#111111')
 plt.close()
 print(f'Saved {path.name}')
